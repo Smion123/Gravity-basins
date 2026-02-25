@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(gravity_basins)
 
 set(CMAKE_CXX_STANDARD 20)
-add_compile_options(-fsanitize=address,undefined -g -O0 -Wall -Werror)
+add_compile_options(-fsanitize=address,undefined -O3 -Wall -Werror -g -march=native)
 
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 
