@@ -6,7 +6,7 @@
 #include "StaticPlanet.hpp"
 #include "ForceCalculation.hpp"
 #include <iostream>
-const float dt_mult = 10;
+const float dt_mult = 20;
 
 const float G = 10.f;
 const float k = 10.f;

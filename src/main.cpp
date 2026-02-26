@@ -13,7 +13,7 @@
 
 const int width = 2560;
 const int height = 1440;
-const int fractalScaleMultiplier = 1;
+const int fractalScaleMultiplier = 2;
 const float G = 10.f;
 const float k = 10.f;
 const float drag = 0.002;
@@ -22,7 +22,7 @@ int pixelBuffer[height + fractalScaleMultiplier][width + fractalScaleMultiplier]
 
 void computeRow(const int y, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
 
-    nice(10);
+    (void)!nice(10);
 
     std::vector<std::unique_ptr<Planet>> all;
 
@@ -200,6 +200,8 @@ int main() {
             std::cout << "Progress: " << progress << "% (" << futures.size() << " threads remaining)" << std::endl;
         }
     }
+
+    fractalTexture.loadFromImage(fractalImage);
     fractalSprite.setTexture(fractalTexture);
     while (window.isOpen()) {
         sf::Event event;
