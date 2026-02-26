@@ -200,7 +200,16 @@ int main() {
             std::cout << "Progress: " << progress << "% (" << futures.size() << " threads remaining)" << std::endl;
         }
     }
-
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            int planetIdx = pixelBuffer[j][i];
+            if (planetIdx >= 0 && planetIdx < 3) {
+                fractalImage.setPixel(i, j, colors[planetIdx]);
+            } else {
+                fractalImage.setPixel(i, j, sf::Color::Black);
+            }
+        }
+    }
     fractalTexture.loadFromImage(fractalImage);
     fractalSprite.setTexture(fractalTexture);
     while (window.isOpen()) {
