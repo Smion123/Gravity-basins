@@ -10,10 +10,14 @@
 #include <thread>
 #include <unistd.h>
 //const float dt = 0.1;
-
+// todo 
+// variable planet settlement - static planets further, constants can be larger
+// potentially lowering resolution where not needed - is pixel not colored? are enough pixels around already one color? fill it
+// removing virtual function calls
+// optimize calculate planet force
 const int width = 2560;
 const int height = 1440;
-const int fractalScaleMultiplier = 2;
+const int fractalScaleMultiplier = 1;
 const float G = 10.f;
 const float k = 10.f;
 const float drag = 0.002;

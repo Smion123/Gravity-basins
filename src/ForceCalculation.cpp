@@ -12,7 +12,85 @@ const float G = 10.f;
 const float k = 10.f;
 
 void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
-    float k4 = k * k * k * k;
+
+    for (auto& p : all) {
+        p->lastxForce = 0;
+        p->lastyForce = 0;
+    }
+    for (size_t i = 0; i < all.size(); i++) {
+        for (size_t k = 0; k < staticPlanets.size(); k++) {
+            if (!all[i]->active || !staticPlanets[k]->active) {
+                continue;
+            }
+
+            float xDelta = staticPlanets[k]->positionX - all[i]->positionX;
+            float yDelta = staticPlanets[k]->positionY - all[i]->positionY;
+
+            float r2 = xDelta * xDelta + yDelta * yDelta;
+            float weightMult = all[i]->weight * staticPlanets[k]->weight;
+
+            if (r2 < 100) {
+                float r = sqrt(r2);
+
+                float forceCommon = (G * weightMult) / 100;
+
+                float distMult = r / 10;
+
+                forceCommon *= distMult;
+            }
+
+
+            float forceCommon = (G * weightMult) / r2;
+
+            float fx = forceCommon * xDelta;
+            float fy = forceCommon * yDelta;
+
+            all[i]->lastxForce += fx;
+            all[i]->lastyForce += fy;
+        }
+
+        
+        for (size_t j = i + 1; j < all.size(); j++) {
+            if (!all[i]->active || !all[j]->active) {
+                continue;
+            }
+            float xDelta = staticPlanets[k]->positionX - all[i]->positionX;
+            float yDelta = staticPlanets[k]->positionY - all[i]->positionY;
+
+            float r2 = xDelta * xDelta + yDelta * yDelta;
+            float weightMult = all[i]->weight * staticPlanets[k]->weight;
+
+            if (r2 < 100) {
+                float r = sqrt(r2);
+
+                float forceCommon = (G * weightMult) / 100;
+
+                float distMult = r / 10;
+
+                forceCommon *= distMult;
+            }
+
+
+            float forceCommon = (G * weightMult) / r2;
+
+            float fx = forceCommon * xDelta;
+            float fy = forceCommon * yDelta;
+
+            all[i]->lastxForce += fx;
+            all[i]->lastyForce += fy;
+
+            all[j]->lastxForce += -fx;
+            all[j]->lastyForce += -fy;
+        }
+        
+    }
+
+}
+
+/* old, approximates inverse square law, but too resource intensive
+float k4 = k * k * k * k;
+void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
+
     for (auto& p : all) {
         p->lastxForce = 0;
         p->lastyForce = 0;
@@ -30,7 +108,7 @@ void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const st
             float weightMult = all[i]->weight * staticPlanets[k]->weight;
             
             float denBase = r4 + k4;
-            float denominator = denBase * std::sqrt(std::sqrt(denBase));
+            float denominator = denBase * pow(denBase, 0.25);
 
             float forceCommon = (G * weightMult * r2) / denominator;
             float fx = forceCommon * xDelta;
@@ -40,7 +118,7 @@ void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const st
             all[i]->lastyForce += fy;
         }
 
-
+        
         for (size_t j = i + 1; j < all.size(); j++) {
             if (!all[i]->active || !all[j]->active) {
                 continue;
@@ -54,7 +132,7 @@ void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const st
             float weightMult = all[i]->weight * all[j]->weight;
             
             float denBase = r4 + k4;
-            float denominator = denBase * std::sqrt(std::sqrt(denBase));
+            float denominator = denBase * pow(denBase, 0.25);
 
             float forceCommon = (G * weightMult * r2) / denominator;
             float fx = forceCommon * xDelta;
@@ -66,10 +144,11 @@ void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const st
             all[j]->lastxForce += -fx;
             all[j]->lastyForce += -fy;
         }
+        
     }
 
 }
-
+*/
 float calculateCurrentDT(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
     float lowest = 100000000;
     for (size_t j = 0; j < all.size(); j++) {
