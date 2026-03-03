@@ -17,10 +17,10 @@
 // optimize calculate planet force
 const int width = 2560;
 const int height = 1440;
-const int fractalScaleMultiplier = 4;
+const int fractalScaleMultiplier = 1;
 const float G = 10.f;
 const float k = 10.f;
-const float drag = 0.001;
+const float drag = 0.0015;
 
 int pixelBuffer[height + fractalScaleMultiplier][width + fractalScaleMultiplier] = {};
 
@@ -44,10 +44,10 @@ void computeRow(const int y, const std::vector<std::unique_ptr<Planet>>& staticP
         all[0]->endedUpIn = -1;
         
         int iterations = 0;
-
+        float dt = calculateCurrentDT(all, staticPlanets);
         // Simulate this one particle until it hits a static planet or exits
         while (all[0]->active && iterations < 50000) {
-            applyPlanetVelocity(all, staticPlanets, iterations);
+            applyPlanetVelocity(all, staticPlanets, iterations, dt);
             iterations++;
         }
 
@@ -85,7 +85,8 @@ int main() {
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Gravity Basins");
     window.setFramerateLimit(165);
-    calculateNewPlanetForce(all, staticPlanets);
+    float dt = 0;
+    calculateNewPlanetForce(all, staticPlanets, dt);
 
     for (size_t i = 0; i < all.size(); i++) {
         all[i]->r = (250 + 13 * i) % 155 + 100;
@@ -111,7 +112,7 @@ int main() {
                     window.close();
             }
 
-            applyPlanetVelocity(all, staticPlanets, i);
+            applyPlanetVelocity(all, staticPlanets, i, dt);
             window.clear(sf::Color::Black);
 
             for (size_t i = 0; i < all.size(); i++) {

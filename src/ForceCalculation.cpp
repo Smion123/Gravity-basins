@@ -11,12 +11,15 @@ const float dt_mult = 1;
 const float G = 10.f;
 const float k = 10.f;
 
-void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
+void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets, float &dt) {
 
     for (auto& p : all) {
         p->lastxForce = 0;
         p->lastyForce = 0;
     }
+
+    float lowest = 1000000;
+
     for (size_t i = 0; i < all.size(); i++) {
         for (size_t k = 0; k < staticPlanets.size(); k++) {
             if (!all[i]->active || !staticPlanets[k]->active) {
@@ -39,16 +42,26 @@ void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const st
 
             }
 
-            forceCommon = forceCommon / r;
-
-            float fx = forceCommon * xDelta;
-            float fy = forceCommon * yDelta;
+            float fx = forceCommon * xDelta / r;
+            float fy = forceCommon * yDelta / r;
 
             all[i]->lastxForce += fx;
             all[i]->lastyForce += fy;
+
+            if (lowest > r) {
+                lowest = r;
+            }
+
+            if (lowest < 10) {
+                lowest = 10;
+            }
+
+
         }
         
     }
+
+    dt = ((lowest * sqrt(lowest)) / 10000) * dt_mult;
 
 }
 
@@ -136,9 +149,8 @@ float calculateCurrentDT(std::vector<std::unique_ptr<Planet>>& all, const std::v
     return ((lowest * sqrt(lowest)) / 10000) * dt_mult;
 }
 // 0,00131
-void applyPlanetVelocity(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets, int iterations) {
+void applyPlanetVelocity(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets, int iterations, float& dt) {
 
-    float dt = calculateCurrentDT(all, staticPlanets);
     for (int i = all.size() - 1; i >= 0; i--) {
         if (!all[i]->active) {
             continue;
@@ -152,7 +164,7 @@ void applyPlanetVelocity(std::vector<std::unique_ptr<Planet>>& all, const std::v
         }
         all[i]->updatePosition(dt);
     }
-    calculateNewPlanetForce(all, staticPlanets);
+    calculateNewPlanetForce(all, staticPlanets, dt);
     
     for (int i = all.size() - 1; i >= 0; i--) {
         if (!all[i]->active) {

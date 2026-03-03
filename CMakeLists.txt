@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(gravity_basins)
 
 set(CMAKE_CXX_STANDARD 20)
-add_compile_options(-O3 -g -Wall -Werror)
+add_compile_options(-Ofast -ffast-math -g -Wall -Werror)
 
 find_package(SFML 2.6 COMPONENTS graphics window system REQUIRED)
 
@@ -15,7 +15,7 @@ add_executable(gravity_basins
     src/ForceCalculation.cpp
 )
 
-target_link_options(gravity_basins PRIVATE -fsanitize=address,undefined)
+target_link_options(gravity_basins PRIVATE)
 
 target_link_libraries(gravity_basins
     sfml-graphics
