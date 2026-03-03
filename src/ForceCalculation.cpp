@@ -6,7 +6,7 @@
 #include "StaticPlanet.hpp"
 #include "ForceCalculation.hpp"
 #include <iostream>
-const float dt_mult = 20;
+const float dt_mult = 1;
 
 const float G = 10.f;
 const float k = 10.f;
@@ -25,69 +25,36 @@ void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const st
 
             float xDelta = staticPlanets[k]->positionX - all[i]->positionX;
             float yDelta = staticPlanets[k]->positionY - all[i]->positionY;
-
             float r2 = xDelta * xDelta + yDelta * yDelta;
             float weightMult = all[i]->weight * staticPlanets[k]->weight;
+            float forceCommon = (G * weightMult) / r2;
+            float r = sqrt(r2);
+            if (r < 10) {
 
-            if (r2 < 100) {
-                float r = sqrt(r2);
-
-                float forceCommon = (G * weightMult) / 100;
+                forceCommon = (G * weightMult) / 100;
 
                 float distMult = r / 10;
 
-                forceCommon *= distMult;
+                forceCommon = forceCommon *  distMult;
+
             }
 
-
-            float forceCommon = (G * weightMult) / r2;
+            forceCommon = forceCommon / r;
 
             float fx = forceCommon * xDelta;
             float fy = forceCommon * yDelta;
 
             all[i]->lastxForce += fx;
             all[i]->lastyForce += fy;
-        }
-
-        
-        for (size_t j = i + 1; j < all.size(); j++) {
-            if (!all[i]->active || !all[j]->active) {
-                continue;
-            }
-            float xDelta = staticPlanets[k]->positionX - all[i]->positionX;
-            float yDelta = staticPlanets[k]->positionY - all[i]->positionY;
-
-            float r2 = xDelta * xDelta + yDelta * yDelta;
-            float weightMult = all[i]->weight * staticPlanets[k]->weight;
-
-            if (r2 < 100) {
-                float r = sqrt(r2);
-
-                float forceCommon = (G * weightMult) / 100;
-
-                float distMult = r / 10;
-
-                forceCommon *= distMult;
-            }
-
-
-            float forceCommon = (G * weightMult) / r2;
-
-            float fx = forceCommon * xDelta;
-            float fy = forceCommon * yDelta;
-
-            all[i]->lastxForce += fx;
-            all[i]->lastyForce += fy;
-
-            all[j]->lastxForce += -fx;
-            all[j]->lastyForce += -fy;
         }
         
     }
 
 }
 
-/* old, approximates inverse square law, but too resource intensive
+/* old, approximates inverse square law, but too resource intensive */
+
+/*
 float k4 = k * k * k * k;
 void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
 
@@ -147,8 +114,8 @@ void calculateNewPlanetForce(std::vector<std::unique_ptr<Planet>>& all, const st
         
     }
 
-}
-*/
+}*/
+
 float calculateCurrentDT(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
     float lowest = 100000000;
     for (size_t j = 0; j < all.size(); j++) {

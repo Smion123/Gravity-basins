@@ -19,7 +19,7 @@ void Planet::updatePosition(float dt)
 }
 
 void Planet::checkIfSettled(std::vector<std::unique_ptr<Planet>>& all, const std::vector<std::unique_ptr<Planet>>& staticPlanets) {
-    if (sqrt(velocityX*velocityX + velocityY*velocityY) < 5) {
+    if (sqrt(velocityX*velocityX + velocityY*velocityY) < 10) {
         // enable for cross dynamic planet interractions
         /* 
         for (int i = 0; i < (int)all.size(); i++) {
@@ -38,7 +38,7 @@ void Planet::checkIfSettled(std::vector<std::unique_ptr<Planet>>& all, const std
         for (int i = 0; i < (int)staticPlanets.size(); i++) {
             float differenceOfX = this->positionX-staticPlanets[i]->positionX;
             float differenceOfY = this->positionY-staticPlanets[i]->positionY;
-            if ((sqrt(differenceOfX* differenceOfX + differenceOfY * differenceOfY) < 100)) {
+            if ((sqrt(differenceOfX* differenceOfX + differenceOfY * differenceOfY) < 70)) {
                 this->active = false;
                 this->endedUpIn = staticPlanets[i]->idx;
                 return;

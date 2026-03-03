@@ -17,10 +17,10 @@
 // optimize calculate planet force
 const int width = 2560;
 const int height = 1440;
-const int fractalScaleMultiplier = 1;
+const int fractalScaleMultiplier = 4;
 const float G = 10.f;
 const float k = 10.f;
-const float drag = 0.002;
+const float drag = 0.001;
 
 int pixelBuffer[height + fractalScaleMultiplier][width + fractalScaleMultiplier] = {};
 
@@ -74,11 +74,14 @@ int main() {
     std::vector<std::unique_ptr<Planet>> staticPlanets;
     std::vector<std::unique_ptr<Planet>> all;
 
-    staticPlanets.emplace_back(std::make_unique<StaticPlanet>(500, 800.f, 450.f));
+    staticPlanets.emplace_back(std::make_unique<StaticPlanet>(500, 1000.f, 454.f));
     staticPlanets.emplace_back(std::make_unique<StaticPlanet>(500, 800.f, 800.f));
-    staticPlanets.emplace_back(std::make_unique<StaticPlanet>(500, 1200.f, 450.f));
-    all.emplace_back(std::make_unique<Planet>(1, 300, 370, 0.0, 0.0, drag));
-    //all.emplace_back(std::make_unique<Planet>(50, 700.0, 450.0, 0.0, 0.0, 0.001));
+    staticPlanets.emplace_back(std::make_unique<StaticPlanet>(500, 1200.f, 800.f));
+    all.emplace_back(std::make_unique<Planet>(1, 600, 700, 0.0, 0.0, drag));
+    //all.emplace_back(std::make_unique<Planet>(1, 500, 750, 0.0, 0.0, drag));
+    //all.emplace_back(std::make_unique<Planet>(1, 550, 650, 0.0, 0.0, drag));
+    //all.emplace_back(std::make_unique<Planet>(1, 600, 700, 0.0, 0.0, drag));
+    //all.emplace_back(std::make_unique<Planet>(1, 550, 600, 0.0, 0.0, drag));
 
     sf::RenderWindow window(sf::VideoMode(width, height), "Gravity Basins");
     window.setFramerateLimit(165);
@@ -143,7 +146,6 @@ int main() {
             //window.close();
         }
     }*/
-    
 
     sf::Image fractalImage;
     fractalImage.create(width, height, sf::Color::Black);
